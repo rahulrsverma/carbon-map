@@ -17,11 +17,20 @@ const App = () => {
   const [heatmapData, setHeatmapData] = useState([]);
   const mapRef = useRef(null);
 
+  const getLast30Minutes = () => {
+    const now = new Date();
+    const end = now.toISOString();
+    const start = new Date(now.getTime() - 30 * 60000).toISOString();
+    return { start, end };
+  };
+
   useEffect(() => {
     const fetchData = async () => {
+      const { start, end } = getLast30Minutes();
+
       try {
         const response = await axios.get(
-          "https://api.carbonintensity.org.uk/regional/intensity/2025-01-18T00:00Z/2025-01-18T12:00Z"
+          `https://api.carbonintensity.org.uk/regional/intensity/${start}/${end}`
         );
         const data = response.data.data[0].regions;
         setRegions(data);
